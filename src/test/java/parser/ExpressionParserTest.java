@@ -16,7 +16,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ExpressionParserTest {
+class ExpressionParserTest {
 
     private Expression parseExpression(String code) {
         var stream = new TokenStream(code);
@@ -24,21 +24,21 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testNumberLiteral() {
+    void testNumberLiteral() {
         var code = "10;";
         var ten = (JSNumber) parseExpression(code);
         assertEquals("10", ten.toString());
     }
 
     @Test
-    public void testStringLiteral() {
+    void testStringLiteral() {
         var code = "\"alice in wonderland\";";
         var alice = (JSString) parseExpression(code);
         assertEquals(code.replace(";", ""), alice.toString());
     }
 
     @Test
-    public void testBooleanLiteral() {
+    void testBooleanLiteral() {
         String[] codes = {"true;", "false;"};
         Arrays.stream(codes).forEach(code -> {
             var bool = (JSBoolean) parseExpression(code);
@@ -47,7 +47,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testAdditiveExpressionWithNumericOperands() {
+    void testAdditiveExpressionWithNumericOperands() {
         String[] operators = {"+", "-"};
         Arrays.stream(operators).forEach(operator -> {
             String code = "1" + operator + "2;";
@@ -62,7 +62,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testAdditiveExpressionWithMultipleOperators() {
+    void testAdditiveExpressionWithMultipleOperators() {
         var code = "1 + 2 - 3 + 6;";
         var onePlusTwoMinusThreePlusSix = (BinaryExpression) parseExpression(code);
         var onePlusTwoMinusThree = (BinaryExpression) onePlusTwoMinusThreePlusSix.getLHS();
@@ -87,7 +87,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testGroupPrecedesFactor() {
+    void testGroupPrecedesFactor() {
         var code = "(1 + 6) * 2;";
         var onePlusSixTimesTwo = (BinaryExpression) parseExpression(code);
         var onePlusSix = (BinaryExpression) onePlusSixTimesTwo.getLHS();
@@ -105,7 +105,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testFactorPrecedesTerm() {
+    void testFactorPrecedesTerm() {
         var code = "1 + 2 * 3;";
         var onePlusTwoTimesThree = (BinaryExpression) parseExpression(code);
         var one = (JSNumber) onePlusTwoTimesThree.getLHS();
@@ -123,7 +123,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testTermPrecedesRelational() {
+    void testTermPrecedesRelational() {
         var code = "1 > 2 + 3;";
         var oneGtTwoPlusThree = (BinaryExpression) parseExpression(code);
         var one = (JSNumber) oneGtTwoPlusThree.getLHS();
@@ -141,7 +141,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testRelationalPrecedesLogical() {
+    void testRelationalPrecedesLogical() {
         var code = "1 || 2 > 6;";
         var oneOrTwoGtSix = (BinaryExpression) parseExpression(code);
         var one = (JSNumber) oneOrTwoGtSix.getLHS();
@@ -159,7 +159,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testLogicalPrecedesAssignment() {
+    void testLogicalPrecedesAssignment() {
         var code = "value = 1 || 2;";
         var valueEqOneOrTwo = (BinaryExpression) parseExpression(code);
         var value = (Identifier) valueEqOneOrTwo.getLHS();
@@ -177,7 +177,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testAssignmentWithBinaryExpressionOnTheRHS() {
+    void testAssignmentWithBinaryExpressionOnTheRHS() {
         var code = "value = 10 + 2;";
         var binaryExpression = (BinaryExpression) parseExpression(code);
         var value = (Identifier) binaryExpression.getLHS();
@@ -197,7 +197,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testSimplePrefixIncrement() {
+    void testSimplePrefixIncrement() {
         var code = "++value;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var plusPlus = unaryExpression.getOperator();
@@ -207,7 +207,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testSimplePostfixIncrement() {
+    void testSimplePostfixIncrement() {
         var code = "value++;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var plusPlus = unaryExpression.getOperator();
@@ -217,7 +217,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testSimplePostfixDecrement() {
+    void testSimplePostfixDecrement() {
         var code = "value--;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var minusMinus = unaryExpression.getOperator();
@@ -227,7 +227,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testSimplePrefixDecrement() {
+    void testSimplePrefixDecrement() {
         var code = "--value;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var minusMinus = unaryExpression.getOperator();
@@ -237,7 +237,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testSimpleBooleanNot() {
+    void testSimpleBooleanNot() {
         var code = "!value;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var not = unaryExpression.getOperator();
@@ -247,7 +247,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testChainedBooleanNot() {
+    void testChainedBooleanNot() {
         var code = "!!value;";
         var unaryExpression = (UnaryExpression) parseExpression(code);
         var outerNot = unaryExpression.getOperator();
@@ -260,7 +260,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testEmptyObjectLiteral() {
+    void testEmptyObjectLiteral() {
         var code = "map = {};";
         var mapEqObject = (BinaryExpression) parseExpression(code);
         var map = (Identifier) mapEqObject.getLHS();
@@ -272,7 +272,7 @@ public class ExpressionParserTest {
     }
 
     @Test
-    public void testObjectLiteralWithProperties() {
+    void testObjectLiteralWithProperties() {
         var code = "bender = {name:\"toph\", energy:100};";
         var benderEqToph = (BinaryExpression) parseExpression(code);
         var bender = (Identifier) benderEqToph.getLHS();
